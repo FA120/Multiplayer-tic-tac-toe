@@ -88,6 +88,7 @@ def apply_move(current_player, board,x,y):
 def main():
     root = Tk()
     root.title("tic-tac-toe")
+    root.resizable(False,False)
     initialize_new_game(root,True)
     root.mainloop()
 
