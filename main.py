@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 
-def initialize_new_game(game_window,board, first_game):
+def initialize_new_game(game_window, first_game):
     current_player = StringVar()
     current_player.set("Player 1")
     if first_game:
@@ -88,8 +88,7 @@ def apply_move(current_player, board,x,y):
 def main():
     root = Tk()
     root.title("tic-tac-toe")
-    board = []
-    initialize_new_game(root,board,True)
+    initialize_new_game(root,True)
     root.mainloop()
 
 if __name__=="__main__":
