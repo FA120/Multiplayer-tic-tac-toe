@@ -50,6 +50,8 @@ class Server:
         if self.shut_down:
             await self.stop_connexions()
             self.window_main_menu.destroy()
+        else:
+            self.shut_down = True #the server has already shut down, deal with it properly
 
     def run_join_game(self,main_menu,ip,infos):
         asyncio.run(self.join_game(main_menu,ip,infos))
@@ -84,6 +86,8 @@ class Server:
             if self.shut_down:
                 await self.stop_connexions()
                 self.window_main_menu.destroy()
+            else:
+                self.shut_down = True #the server has already shut down, deal with it properly
         except Exception as error:
             messagebox.showerror(type(error), f"{error}")
     def run_host_game(self,main_menu,button,ip,infos):
@@ -173,8 +177,12 @@ def initialize_new_game(server,host):
     if host:
         game_window.title("tic-tac-toe: Hosting")
     def on_close():
-        server.shut_down = True
-        game_window.destroy()
+        if server.shut_down:
+            game_window.destroy()
+            server.window_main_menu.destroy()
+        else:
+            server.shut_down = True
+            game_window.destroy()
     game_window.protocol("WM_DELETE_WINDOW",on_close)
     buttons_frame = ttk.Frame(game_window)
     buttons_frame.grid(column=0,row=0,sticky="NS")
@@ -182,7 +190,7 @@ def initialize_new_game(server,host):
     reset_button = ttk.Button(buttons_frame,text="Reset",command = server.request_reset_thread)
     reset_button.grid(column=0,row=0,sticky="N")
 
-    close_button = ttk.Button(buttons_frame, text="Close", command=game_window.destroy)
+    close_button = ttk.Button(buttons_frame, text="Close", command=on_close)
     close_button.grid(column=0, row = 1, pady=100)
 
     board_frame = ttk.Frame(game_window)
