@@ -73,16 +73,19 @@ class Server:
         except Exception as error:
             messagebox.showerror(type(error),f"{error}")
     async def host_game(self,main_menu,button,ip,infos):
-        server = await websockets.serve(self.handle_hosting,ip,8000)
-        self.window_main_menu = main_menu
-        self.Server = server
-        infos['text'] ="Game is hosted.Waiting for the second player to join"
-        button['state'] = "disabled"
-        await server.wait_closed()
-        print("server is shutting down")
-        if self.shut_down:
-            await self.stop_connexions()
-            self.window_main_menu.destroy()
+        try:
+            server = await websockets.serve(self.handle_hosting,ip,8000)
+            self.window_main_menu = main_menu
+            self.Server = server
+            infos['text'] ="Game is hosted.Waiting for the second player to join"
+            button['state'] = "disabled"
+            await server.wait_closed()
+            print("server is shutting down")
+            if self.shut_down:
+                await self.stop_connexions()
+                self.window_main_menu.destroy()
+        except Exception as error:
+            messagebox.showerror(type(error), f"{error}")
     def run_host_game(self,main_menu,button,ip,infos):
         asyncio.run(self.host_game(main_menu,button,ip,infos))
 
@@ -136,6 +139,7 @@ class Server:
 
     async def request_reset(self):
         if self.peer:
+            messagebox.showinfo("requesting reset","Reset request sent")
             await self.peer.send("Reset")
         self.requesting_reset = True
     def run_request_reset(self):
